@@ -19,7 +19,7 @@ const AroundYou = () => {
 
 	useEffect(() => {
 		axios
-			.get(`${geoBaseUrl}?apiKey=${process.env.VITE_GEO_API_KEY}`)
+			.get(`${geoBaseUrl}?apiKey=${import.meta.env.VITE_GEO_API_KEY}`)
 			.then((res) => {
 				const countryCode = res?.data?.location?.country;
 				countries.includes(countryCode)
