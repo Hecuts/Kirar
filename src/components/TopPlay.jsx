@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetTopChartsQuery } from "../redux/services/shazamCore";
@@ -10,6 +10,7 @@ import { FreeMode } from "swiper";
 import "swiper/css";
 import "swiper/css/free-mode";
 import PlayPause from "./PlayPause";
+import { FaPlus, FaCheckCircle } from "react-icons/fa";
 
 const TopChartCard = ({
 	song,
@@ -18,35 +19,65 @@ const TopChartCard = ({
 	activeSong,
 	handlePauseClick,
 	handlePlayClick,
-}) => (
-	<div className="w-full flex flex-row items-center hover:bg-[#4c426e] py-2 p-4 rounded-lg cursor-pointer mb-2">
-		<h3 className="font-bold text-base text-white mr-3">{i + 1}.</h3>
-		<div className="flex-1 flex flex-row justify-between items-center">
-			<img
-				src={song?.images?.coverart}
-				alt={song?.title}
-				className="h-20 w-20 rounded-lg"
-			/>
-			<div className="flex-1 flex flex-col justify-center mx-3">
-				<Link to={`/songs/${song.key}`}>
-					<p className="text-xl font-bold text-white">{song?.title}</p>
-				</Link>
-				<Link to={`/artists/${song?.artists[0].adamid}`}>
-					<p className="text-base font-bold text-gray-300 mt-1">
-						{song?.subtitle}
-					</p>
-				</Link>
+}) => {
+	const [added, setAdded] = useState(false);
+	const [showAlert, setShowAlert] = useState(false);
+
+	const addtoPlaylist = (song, i) => {
+		//Add to playlist functionality
+		setAdded(true);
+		setShowAlert(true);
+		setTimeout(() => {
+			setShowAlert(false);
+		}, 4000);
+	};
+
+	return (
+		<div className="w-full flex flex-row items-center hover:bg-[#4c426e] py-2 p-4 rounded-lg cursor-pointer mb-2">
+			<h3 className="font-bold text-base text-white mr-3">{i + 1}.</h3>
+			<div className="flex-1 flex flex-row justify-between items-center">
+				<img
+					src={song?.images?.coverart}
+					alt={song?.title}
+					className="h-20 w-20 rounded-lg"
+				/>
+				<div className="flex-1 flex flex-col justify-center mx-3">
+					<Link to={`/songs/${song.key}`}>
+						<p className="text-xl font-bold text-white">{song?.title}</p>
+					</Link>
+					<Link to={`/artists/${song?.artists[0].adamid}`}>
+						<p className="text-base font-bold text-gray-300 mt-1">
+							{song?.subtitle}
+						</p>
+					</Link>
+				</div>
 			</div>
+			<PlayPause
+				isPlaying={isPlaying}
+				activeSong={activeSong}
+				song={song}
+				handlePause={handlePauseClick}
+				handlePlay={handlePlayClick}
+			/>
+			{!added ? (
+				<FaPlus
+					size={25}
+					className="ml-3 text-gray-300 hover:scale-150 "
+					onClick={addtoPlaylist}
+				/>
+			) : (
+				<>
+					<FaCheckCircle className="ml-3 text-green-500 hover:scale-150 " />
+				</>
+			)}
+			{showAlert && (
+				<span className="text-green-500 absolute right-0 font-black animate-slowfade mt-12">
+					song added to playlist
+				</span>
+			)}
 		</div>
-		<PlayPause
-			isPlaying={isPlaying}
-			activeSong={activeSong}
-			song={song}
-			handlePause={handlePauseClick}
-			handlePlay={handlePlayClick}
-		/>
-	</div>
-);
+	);
+};
 
 const TopPlay = () => {
 	const dispatch = useDispatch();
@@ -81,7 +112,7 @@ const TopPlay = () => {
 						<p className="text-gray-300 cursor-pointer text-base">See more</p>
 					</Link>
 				</div>
-				<div>
+				<div className="flex flex-col">
 					{topPlays?.map((song, i) => (
 						<TopChartCard
 							key={song.key}

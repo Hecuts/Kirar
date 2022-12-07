@@ -1,4 +1,5 @@
 import { logo } from "../assets";
+import { kirar } from "../assets";
 import { useState } from "react";
 import { links } from "../assets/constants";
 import { NavLink } from "react-router-dom";
@@ -27,7 +28,10 @@ const Sidebar = () => {
 	return (
 		<>
 			<div className="md:flex hidden flex-col w-[240px] py-10 px-4 bg-[#191624] ">
-				<img src={logo} alt="logo" className="w-full h-14 object-contain" />
+				{/* <img src={kirar} alt="logo" className="w-full h-14 object-contain" /> */}
+				<h1 className="h-14 text-[#FFD700] font-bold self-center text-3xl mr-3 font-['Pacifico']">
+					Kirar
+				</h1>
 				<NavLinks />
 			</div>
 
